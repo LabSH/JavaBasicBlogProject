@@ -1,0 +1,116 @@
+자바 프로젝트 작성 요령 및 순서
+
+1. [buildgradle] 세팅
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+    implementation 'com.mysql:mysql-connector-j:8.4.0' # 버전에 맞게 설정
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+2.템플릿을 받는다면 압축 풀기 직전 파일들을 드래그 앤 드롭으로 [webapp]경로에 삽입.
+  주의) WEB-INF폴더와 index.jsp파일의 이름이 겹치니 삭제하고 삽입.
+
+3. [member] memebr수정(다른 템플릿이면 없을수있음)
+
+4. taglib사용하는 jsp파일 있을경우 아래 코드로 대체
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+5. DB설정
+5-1) root, 1234(초기값)으로 mysql 데이터 소스 생성 (생성하기 전엔 연결테스트 권장)
+5-2) 콘솔 창 접속
+5-3) DB생성, 유저생성, 권한부여
+5-4) 데이터 소스 제거 후 -> 새로 추가한 유저로 데이터 소스 생성
+5-5) 사용 할 DB선택 후 -> 테이블 추가 코드 작성 후 실행
+
+
+6. java클래스 생성
+6-1) [java] 하위 폴더에 [controller, repository, model, service] 4개의 패키지 생성
+
+6-2) [model] 패키지에 Member.java 생성 후 -> member테이블 컬럼의 이름과 맞게 private변수를 설정 ->
+     member클래스 키워드에 [control + enter] 눌러 getter setter 생성
+
+6-3) [repository] 패키지에 [DAO(interface), DAOImpl(class)] 생성
+
+6-4)  [DAO(interface)]의 메서드 내부에 아래 코드 작성
+
+6-5) [DAOImpl(class)]의 메서드 내부에 DB 정보에 맞게 아래 코드 작성 ->
+
+6-6) [repository] 패키지에 [MemberDAO(interface), MemberDAOImpl(class)] 생성
+
+6-7) [MemberDAO(interface)]의 메서드 내부에 아래 코드 작성 -> 더블클릭으로 [model.Member import] 적용
+
+6-8) [MemberDAOImpl(class)]의 메서드 내부에 아래 코드 작성 -> 테이블에 맞게 변경해야함.
+
+6-9) [controller] 패키지에 MemberController.java 생성 후 작성 (MemberDAOImpl 소문자주의)
+
+7. [member]폴더 자료이름 재설정
+
+8. [nav.jsp] 30번째줄 컬럼에 맞게 설정
+
+
+
+[추가사항]
+작동순서 : nav.jsp -> <a>로 어떠한 이름으로 매개변수와 같이 데이터 전송 -> 컨트롤러가 그 이름과 동일한 작업을 시행 ->
+         컨드롤러 내부의 작업에서 DAOImpl메서드 작업을 할 수도 있음 -> 결과값 반환 -> 출력
+
+8번까지가 기본적인 세팅
+그 이후엔 (클래스명, 변수명, 세션명, 경로 등) 잘 맞게 변경
+
+[주의사항]
+1. 맨 처음 프로젝트 실행하기 전에 베포설정 건들지않도록 해야함. 가끔 아티팩트 생성못함
+2. 재베포하고 처음부터 로그아웃하고 테스트 실행해야한다.
+3. 자료형주의(get,set)
+4. 기본키 id, seq차이 인지
+
+[Database code]
+
+show databases;
+
+create database db_last_202012034; # DB생성
+drop database db_last_202012034; # DB삭제
+
+select user, host from mysql.user; # mysql 데이터베이스의 user 테이블이 대상, DB유저를 확인 할 수 있다.
+
+create user 'u_b200412345'@'localhost' identified by '1234'; # DB유저 생성, 사용자:u_b200412345, 암호:cometrue
+
+grant all privileges on db_b200412345.* to 'u_b200412345'@'localhost'; # 권한부여
+flush privileges; # 권한부여적용
+
+drop user 'u200412345'@'localhost'; # DB유저삭제
+
+
+======================================================================================================
+
+use db_last_202012034; # 사용할 DB를 선택(그냥 오른쪽 위 눌러서 해도됨)
+
+show tables; # 현재 DB에서 table종류의 이름을 출력
+
+create table member (
+                        seq int auto_increment not null primary key,
+                        email varchar(30) not null unique,
+                        pw varchar(30) not null,
+                        username varchar(30) not null,
+                        phone varchar(30) not null,
+                        address varchar(30),
+                        admin int(1) not null
+);
+
+insert into member(email, pw, username, phone, address, admin) values ('202012034', '1234', '김승현', '123123123', '서울어딘가', 1);
+# 데이터 삽입
+
+select * from member where id='202012034' and pw='1234'; # 조건에 맞는 행 찾아온다.
+
+update member set username='kimsh' where id='202012034'; # 조건에 맞는 행 수정
+
+delete from member where id='202012034'; # 조건에 맞는 행 삭제
+
+=======================================================================================================
+
+
+
+
+
+
