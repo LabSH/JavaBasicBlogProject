@@ -19,7 +19,7 @@ Java를 활용한 첫 프로젝트로, 기초적인 사용자 관리 시스템�
 * OS: `macOS`
 * DBMS: `MySQL`
 * 개발 도구: `IntelliJ`
-* 주요 기술: `Java`, `JDBC`, `JSP`
+* 주요 기술: `Java` `JDBC` `JSP`
 
 👥 프로젝트 작업인원: 개인 프로젝트
 
